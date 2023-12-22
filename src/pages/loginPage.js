@@ -1,55 +1,52 @@
-class LoginPage {
+const BasePage = require('./basePage');
+
+class LoginPage extends BasePage {
   constructor(page) {
-    this.page = page;
-    this.base_url = 'https://www.saucedemo.com/';
-  }
-
-  async getTitle() {
-    return await this.page.title();
-  }
-
-  async verifyLoginPage() {
-    const element = await this.page.$('#login_button_container > div > form > div.login_logo');
-    expect(element).not.toBeNull();
-  }
-
-  async navigateToLoginPage() {
-    await this.page.goto(this.base_url);
-  }
-
-  async input_username(username) {
-    await this.page.type('#user-name', username);
-  }
-
-  async input_password(password) {
-    await this.page.type('#password', password);
-  }
-
-  async click_login_button() {
-    await this.page.click('#login-button');
+    super(page, 'https://www.saucedemo.com/');
   }
 
   async login(username, password) {
-    if (username !== '') {
-      await this.input_username(username);
+    await this.navigateTo();
+    if (username) {
+      await this.inputText('#user-name', username);
     }
-    if (password !== '') {
-      await this.input_password(password);
+    if (password) {
+      await this.inputText('#password', password);
     }
-    await this.click_login_button();
+    await this.click('#login-button');
   }
 
   async verifyLoginErrorMessage(expectedErrorText) {
-    await this.page.waitForSelector('#login_button_container > div > form > div.error-message-container.error > h3');
-    const element = await this.page.$('#login_button_container > div > form > div.error-message-container.error > h3');
+    const errorMessageSelector = '#login_button_container > div > form > div.error-message-container.error > h3';
+  
+    try {
+      await this.page.waitForSelector(errorMessageSelector, { visible: true, timeout: 5000 });
+    } catch (error) {
+      throw new Error(`Error message element with selector '${errorMessageSelector}' not found or not visible.`);
+    }
+  
+    const element = await this.page.$(errorMessageSelector);
+    
+    if (!element) {
+      throw new Error(`Error message element with selector '${errorMessageSelector}' not found.`);
+    }
+  
     const elementText = await this.page.evaluate(element => element.textContent, element);
-    expect(elementText).toBe(expectedErrorText);
+  
+    if (elementText !== expectedErrorText) {
+      throw new Error(`Expected: "${expectedErrorText}", Received: "${elementText}"`);
+    }
   }
+  
 
   async userTriesToAccessMainPageWithoutLoggingIn() {
-    await this.page.goto('https://www.saucedemo.com/inventory.html');
+    await this.navigateTo('https://www.saucedemo.com/inventory.html');
   }
 
+  async userTriesToAccessProtectedPageWithoutLoggingIn(pageURL) {
+    await this.navigateTo(pageURL);
+    await this.page.waitForTimeout(2000);
+  }
 }
 
 module.exports = LoginPage;

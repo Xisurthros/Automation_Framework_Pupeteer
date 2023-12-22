@@ -2,55 +2,70 @@ const { test, expect } = require('@jest/globals');
 const LoginPage = require('../pages/loginPage');
 const TestUtils = require('../utils/testUtils');
 
-describe('Login page', () => {
-  let loginPage;
-  let testUtils;
+// Test data
+const testData = {
+  validCredentials: { username: 'standard_user', password: 'secret_sauce' },
+  invalidCredentials: [
+    { username: '', password: '', errorMessage: 'Epic sadface: Username is required' },
+    { username: 'standard_user', password: '', errorMessage: 'Epic sadface: Password is required' },
+    { username: 'invalid_username', password: 'secret_sauce', errorMessage: 'Epic sadface: Username and password do not match any user in this service' },
+    { username: 'standard_user', password: 'invalid_password', errorMessage: 'Epic sadface: Username and password do not match any user in this service' },
+  ],
+  protectedPages: [
+    '/inventory.html',
+    '/cart.html',
+    '/checkout-step-one.html',
+    '/checkout-step-two.html',
+    '/checkout-complete.html',
+    ...Array.from({ length: 6 }, (_, i) => `/inventory-item.html?id=${i}`),
+  ].map(page => `https://www.saucedemo.com${page}`),
+};
+
+// Initialize test suite
+describe('Login Page Tests', () => {
+  let loginPage, testUtils;
 
   beforeEach(async () => {
     testUtils = new TestUtils();
-    await testUtils.browserInit();
-    await testUtils.pageInit();
+    await testUtils.initBrowser();
+    await testUtils.initPage();
     loginPage = new LoginPage(testUtils.page);
+    await loginPage.navigateTo();
   });
 
   afterEach(async () => {
     await testUtils.closeBrowser();
   });
 
-  test('should display an error message when no username or password are provided', async () => {
-    await loginPage.navigateToLoginPage();
-    await loginPage.login('', '');
-    await loginPage.verifyLoginErrorMessage('Epic sadface: Username is required');
+  // Test for successful login
+  describe('Successful Login', () => {
+    test('logs in with valid credentials', async () => {
+      await loginPage.login(testData.validCredentials.username, testData.validCredentials.password);
+      expect(await testUtils.getCurrentUrl()).toBe('https://www.saucedemo.com/inventory.html');
+    });
   });
 
-  test('should display an error message when no username is provided', async () => {
-    await loginPage.navigateToLoginPage();
-    await loginPage.login('', 'secret_sauce');
-    await loginPage.verifyLoginErrorMessage('Epic sadface: Username is required');
+  // Test for unsuccessful login attempts
+  describe('Unsuccessful Login', () => {
+    test.each(testData.invalidCredentials)(
+      'displays error for invalid credentials',
+      async ({ username, password, errorMessage }) => {
+        await loginPage.login(username, password);
+        await loginPage.verifyLoginErrorMessage(errorMessage);
+      }
+    );
   });
 
-  test('should display an error message when no password is provided', async () => {
-    await loginPage.navigateToLoginPage();
-    await loginPage.login('standard_user', '');
-    await loginPage.verifyLoginErrorMessage('Epic sadface: Password is required');
+  // Test for unauthorized access to protected pages
+  describe('Unauthorized Access', () => {
+    test.each(testData.protectedPages)(
+      'redirects to login page from %s when not logged in',
+      async (pageURL) => {
+        await loginPage.userTriesToAccessProtectedPageWithoutLoggingIn(pageURL);
+        expect(await testUtils.getCurrentUrl()).toBe('https://www.saucedemo.com/');
+        const errorMessage = `Epic sadface: You can only access '${new URL(pageURL).pathname}' when you are logged in.`;
+        await loginPage.verifyLoginErrorMessage(errorMessage);
+      }
+    );
   });
-
-  test('should display an error message when an invalid username is provided', async () => {
-    await loginPage.navigateToLoginPage();
-    await loginPage.login('invalid_username', 'secret_sauce');
-    await loginPage.verifyLoginErrorMessage('Epic sadface: Username and password do not match any user in this service');
-  });
-
-  test('should display an error message when an invalid password is provided', async () => {
-    await loginPage.navigateToLoginPage();
-    await loginPage.login('standard_user', 'invalid_password');
-    await loginPage.verifyLoginErrorMessage('Epic sadface: Username and password do not match any user in this service');
-  });
-  
-  test('should direct users back to the login page when the try to access the main page without logging in', async () => {
-    await loginPage.navigateToLoginPage();
-    await loginPage.userTriesToAccessMainPageWithoutLoggingIn();
-    await loginPage.verifyLoginErrorMessage('Epic sadface: You can only access \'/inventory.html\' when you are logged in.');
-  });
-
 });
