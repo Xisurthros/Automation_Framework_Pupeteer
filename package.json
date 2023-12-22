@@ -4,7 +4,7 @@
   "description": "",
   "main": "example.tests.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --runInBand --verbose"
   },
   "keywords": [],
   "author": "",
