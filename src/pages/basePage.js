@@ -12,17 +12,20 @@ class BasePage {
         return await this.page.title();
     }
 
-    async verifyElement(selector) {
-        const element = await this.page.$(selector);
-        return element !== null;
-    }
-
     async inputText(selector, text) {
         await this.page.type(selector, text);
     }
 
     async click(selector) {
         await this.page.click(selector);
+    }
+
+    async verifyElementExists(elementName, selector) {
+        try {
+          await this.page.waitForSelector(selector, { visible: true, timeout: 5000 });
+        } catch (error) {
+          throw new Error(`Element with selector '${selector}' not found or not visible.`);
+        }
     }
 }
 

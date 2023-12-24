@@ -37,7 +37,6 @@ class LoginPage extends BasePage {
       throw new Error(`Expected: "${expectedErrorText}", Received: "${elementText}"`);
     }
   }
-  
 
   async userTriesToAccessMainPageWithoutLoggingIn() {
     await this.navigateTo('https://www.saucedemo.com/inventory.html');
