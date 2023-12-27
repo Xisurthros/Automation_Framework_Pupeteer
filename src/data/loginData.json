@@ -31,16 +31,75 @@
     }
   ],
   "protectedPages": [
-    "https://www.saucedemo.com/inventory.html",
-    "https://www.saucedemo.com/cart.html",
-    "https://www.saucedemo.com/checkout-step-one.html",
-    "https://www.saucedemo.com/checkout-step-two.html",
-    "https://www.saucedemo.com/checkout-complete.html",
-    "https://www.saucedemo.com/inventory-item.html?id=0",
-    "https://www.saucedemo.com/inventory-item.html?id=1",
-    "https://www.saucedemo.com/inventory-item.html?id=2",
-    "https://www.saucedemo.com/inventory-item.html?id=3",
-    "https://www.saucedemo.com/inventory-item.html?id=4",
-    "https://www.saucedemo.com/inventory-item.html?id=5"
+    {
+      "url": "https://www.saucedemo.com/inventory.html",
+      "imageID": "inventory"
+    },
+    {
+      "url": "https://www.saucedemo.com/cart.html",
+      "imageID": "cart"
+    },
+    {
+      "url": "https://www.saucedemo.com/checkout-step-one.html",
+      "imageID": "checkout-step-one"
+    },
+    {
+      "url": "https://www.saucedemo.com/checkout-step-two.html",
+      "imageID": "checkout-step-two"
+    },
+    {
+      "url": "https://www.saucedemo.com/checkout-complete.html",
+      "imageID": "checkout-complete"
+    },
+    {
+      "url": "https://www.saucedemo.com/inventory-item.html?id=0",
+      "imageID": "inventory-item-0"
+    },
+    {
+      "url": "https://www.saucedemo.com/inventory-item.html?id=1",
+      "imageID": "inventory-item-1"
+    },
+    {
+      "url": "https://www.saucedemo.com/inventory-item.html?id=2",
+      "imageID": "inventory-item-2"
+    },
+    {
+      "url": "https://www.saucedemo.com/inventory-item.html?id=3",
+      "imageID": "inventory-item-3"
+    },
+    {
+      "url": "https://www.saucedemo.com/inventory-item.html?id=4",
+      "imageID": "inventory-item-4"
+    },
+    {
+      "url": "https://www.saucedemo.com/inventory-item.html?id=5",
+      "imageID": "inventory-item-5"
+    }
+  ],
+  "essentialElements": [
+    { 
+      "element": "Logo", 
+      "selector": ".login_logo"
+    },
+    { 
+      "element": "Username Field", 
+      "selector": "#user-name" 
+    },
+    { 
+      "element": "Password Field", 
+      "selector": "#password" 
+    },
+    { 
+      "element": "Login Button", 
+      "selector": "#login-button" 
+    },
+    { 
+      "element": "Login Credentials",
+      "selector": ".login_credentials"
+    },
+    {
+      "element": "Password Credentials",
+      "selector": ".login_password"
+    }
   ]
 }

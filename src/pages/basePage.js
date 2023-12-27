@@ -1,7 +1,7 @@
 class BasePage {
-    constructor(page, baseUrl) {
+    constructor(page) {
         this.page = page;
-        this.baseUrl = baseUrl;
+        this.baseUrl = 'https://www.saucedemo.com/';
     }
 
     async navigateTo(url = this.baseUrl) {

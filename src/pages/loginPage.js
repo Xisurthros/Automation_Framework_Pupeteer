@@ -2,7 +2,7 @@ const BasePage = require('./basePage');
 
 class LoginPage extends BasePage {
   constructor(page) {
-    super(page, 'https://www.saucedemo.com/');
+    super(page);
   }
 
   async login(username, password) {
@@ -17,7 +17,7 @@ class LoginPage extends BasePage {
   }
 
   async verifyLoginErrorMessage(expectedErrorText) {
-    const errorMessageSelector = '#login_button_container > div > form > div.error-message-container.error > h3';
+    const errorMessageSelector = '.error-message-container.error h3';
   
     try {
       await this.page.waitForSelector(errorMessageSelector, { visible: true, timeout: 5000 });
@@ -46,6 +46,11 @@ class LoginPage extends BasePage {
     await this.navigateTo(pageURL);
     await this.page.waitForTimeout(2000);
   }
+
+  static sanitizePathForImageName(path) {
+    return path.replace(/\//g, '-').replace(/^-/, '');
+  }
+
 }
 
 module.exports = LoginPage;
