@@ -32,7 +32,7 @@ describe('Login Page Tests', () => {
       test(`displays ${element}`, async () => {
         await loginPage.verifyElementExists(element, selector);
         // outline the element in the browser to visually confirm it's the correct one and screenshot
-        await testUtils.captureScreenshot(selector, `./screenshots/login/elements_exist/${element}-exists.png`);
+        await loginPage.captureScreenshot(selector, `./screenshots/login/elements_exist/${element}-exists.png`);
       });
     });
   });
@@ -43,7 +43,7 @@ describe('Login Page Tests', () => {
       test(`displays error for invalid credentials: ${username}, ${password}`, async () => {
         await loginPage.login(username, password);
         await loginPage.verifyLoginErrorMessage(errorMessage);
-        await testUtils.captureScreenshot('.error-message-container.error h3', `./screenshots/login/login_attempt/invalid-login-${username}-${password}.png`)
+        await loginPage.captureScreenshot('.error-message-container.error h3', `./screenshots/login/login_attempt/invalid-login-${username}-${password}.png`)
       }, 15000);
     });
   });
@@ -54,10 +54,10 @@ describe('Login Page Tests', () => {
       const { url, imageID } = page; // Destructure the page object
       test(`redirects to login page from ${url} when not logged in`, async () => {
         await loginPage.userTriesToAccessProtectedPageWithoutLoggingIn(url);
-        expect(await testUtils.getCurrentUrl()).toBe('https://www.saucedemo.com/');
+        expect(await loginPage.getCurrentUrl()).toBe('https://www.saucedemo.com/');
         const errorMessage = `Epic sadface: You can only access '${new URL(url).pathname}' when you are logged in.`;
         await loginPage.verifyLoginErrorMessage(errorMessage);
-        await testUtils.captureScreenshot('.error-message-container.error h3', `./screenshots/login/unauthorized_access/${imageID}-invalid-login.png`);
+        await loginPage.captureScreenshot('.error-message-container.error h3', `./screenshots/login/unauthorized_access/${imageID}-invalid-login.png`);
       });
     });
   });
@@ -66,8 +66,8 @@ describe('Login Page Tests', () => {
   describe('Successful Login', () => {
     test('logs in with valid credentials', async () => {
       await loginPage.login(loginData.validCredentials.username, loginData.validCredentials.password);
-      expect(await testUtils.getCurrentUrl()).toBe('https://www.saucedemo.com/inventory.html');
-      await testUtils.captureScreenshot('', './screenshots/login/login_attempt/successful-login.png');
+      expect(await loginPage.getCurrentUrl()).toBe('https://www.saucedemo.com/inventory.html');
+      await loginPage.captureScreenshot('', './screenshots/login/login_attempt/successful-login.png');
     }, 10000);
   });
 });

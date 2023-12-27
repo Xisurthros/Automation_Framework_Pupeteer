@@ -32,9 +32,9 @@ describe('Home Page UI Component Tests', () => {
         homeData.uiComponents.forEach(({ name, description, selector }) => {
             test(`verify "${name}" (${description}) exists`, async () => {
                 await homePage.verifyElementExists(name, selector);
-                await testUtils.captureScreenshot(selector, `./screenshots/home/elements_exist/${name}.png`);
+                await homePage.captureScreenshot(selector, `./screenshots/home/elements_exist/${name}.png`);
                 // Remove the outline so it is no carried over to the next test
-                await testUtils.removeOutline(selector);
+                await homePage.removeOutline(selector);
             });
         });
 
@@ -75,7 +75,7 @@ describe('Home Page UI Component Tests', () => {
                     let isSortedCorrectly = homePage.isSorted(productPrices, sortType === 'Price (high to low)');
                     expect(isSortedCorrectly).toBeTruthy();
                 }
-                await testUtils.captureScreenshot('', `./screenshots/home/sorted/${sortType}.png`);
+                await homePage.captureScreenshot('', `./screenshots/home/sorted/${sortType}.png`);
             });
         });
     });
