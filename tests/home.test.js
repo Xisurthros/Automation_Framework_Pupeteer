@@ -16,15 +16,15 @@ describe('Home Page UI Component Tests', () => {
     beforeAll(async () => {
         testUtils = new TestUtils();
         await testUtils.init();
-        loginPage = new LoginPage(testUtils.puppeteerWrapper.page);
-        homePage = new HomePage(testUtils.puppeteerWrapper.page);
+        loginPage = new LoginPage(testUtils.page);
+        homePage = new HomePage(testUtils.page);
         await loginPage.navigateTo();
         await loginPage.login('standard_user', 'secret_sauce');
     }, 10000);
 
     // Tear down after all tests
     afterAll(async () => {
-        await testUtils.close();
+        await testUtils.closeBrowser();
     });
 
     // Test suite for verifying individual UI components
@@ -32,9 +32,7 @@ describe('Home Page UI Component Tests', () => {
         homeData.uiComponents.forEach(({ name, description, selector }) => {
             test(`verify "${name}" (${description}) exists`, async () => {
                 await homePage.verifyElementExists(name, selector);
-                await testUtils.captureScreenshot(selector, `./screenshots/home/elements_exist/${name}.png`);
-                // Remove the outline so it is no carried over to the next test
-                await testUtils.removeOutline(selector);
+                await homePage.captureScreenshot(selector, `./screenshots/home/elements_exist/${name}.png`);
             });
         });
 
@@ -75,7 +73,7 @@ describe('Home Page UI Component Tests', () => {
                     let isSortedCorrectly = homePage.isSorted(productPrices, sortType === 'Price (high to low)');
                     expect(isSortedCorrectly).toBeTruthy();
                 }
-                await testUtils.captureScreenshot('', `./screenshots/home/sorted/${sortType}.png`);
+                await homePage.captureScreenshot('', `./screenshots/home/sorted/${sortType}.png`);
             });
         });
     });

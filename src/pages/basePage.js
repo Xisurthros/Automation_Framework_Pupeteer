@@ -27,6 +27,28 @@ class BasePage {
           throw new Error(`Element with selector '${selector}' not found or not visible.`);
         }
     }
+
+    async getCurrentUrl() {
+        return await this.page.url();
+    }
+
+    async captureScreenshot(selector, path) {
+        if (selector !== '') {
+            await this.page.evaluate((selector) => {
+                document.querySelector(selector).style.outline = 'solid red';
+            }, selector);
+        }
+        await this.page.screenshot({ path, fullPage: true });
+        if (selector !== '') {
+            await this.removeOutline(selector);
+        }
+    }
+
+    async removeOutline(selector) {
+        await this.page.evaluate((selector) => {
+            document.querySelector(selector).style.outline = '';
+        }, selector);
+    }
 }
 
 module.exports = BasePage;

@@ -1,47 +1,34 @@
-const PuppeteerWrapper = require('./puppeteerWrapper');
+const puppeteer = require('puppeteer');
 
 class TestUtils {
     constructor() {
-        this.puppeteerWrapper = new PuppeteerWrapper();
-    }
-
-    async init() {
-        await this.puppeteerWrapper.initBrowser({
+        this.browser = null;
+        this.page = null;
+        this.browser_options = {
             headless: false,
             slowMo: 50,
             devtools: false,
             defaultViewport: null,
             args: ['--start-maximized']
+        };
+    }
+
+    async init() {
+        this.browser = await puppeteer.launch(this.browser_options);
+        this.page = await this.browser.newPage();
+        this.setupGlobalNetworkErrorListener();
+    }
+
+    setupGlobalNetworkErrorListener() {
+        this.page.on('response', (response) => {
+            if (!response.ok()) {
+                global.networkErrorDetected = true;
+            }
         });
     }
 
-    async close() {
-        await this.puppeteerWrapper.closeBrowser();
-    }
-
-    async getCurrentUrl() {
-        return await this.puppeteerWrapper.getCurrentUrl();
-    }
-
-    async captureScreenshot(selector, path) {
-        // if (selector !== '') {
-            // then outline the element, capture a screenshots and remove the ouline
-            // otherwise just capture a screenshot
-        if (selector !== '') {
-            await this.puppeteerWrapper.page.evaluate((selector) => {
-                document.querySelector(selector).style.outline = 'solid red';
-            }, selector);
-        }
-        await this.puppeteerWrapper.page.screenshot({ path, fullPage: true });
-        if (selector !== '') {
-            await this.removeOutline(selector);
-        }
-    }
-
-    async removeOutline(selector) {
-        await this.puppeteerWrapper.page.evaluate((selector) => {
-            document.querySelector(selector).style.outline = '';
-        }, selector);
+    async closeBrowser() {
+        await this.browser.close();
     }
 }
 
