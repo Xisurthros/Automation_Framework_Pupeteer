@@ -34,7 +34,6 @@ class HomePage extends BasePage {
     const elements = await this.getAllItems();
     let product = null;
 
-    // Use a for...of loop to handle asynchronous operations
     for (let element of elements) {
         const name = await element.$eval('.inventory_item_name', (el) => el.innerText);
         if (name === productName) {

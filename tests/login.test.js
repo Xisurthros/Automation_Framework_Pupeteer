@@ -17,13 +17,13 @@ describe('Login Page Tests', () => {
   beforeAll(async () => {
     testUtils = new TestUtils();
     await testUtils.init();
-    loginPage = new LoginPage(testUtils.puppeteerWrapper.page);
+    loginPage = new LoginPage(testUtils.page);
     await loginPage.navigateTo();
   });
 
   // Tear down after each test
   afterAll(async () => {
-    await testUtils.close();
+    await testUtils.closeBrowser();
   });
 
   // Test suite for verifying the existence of essential elements

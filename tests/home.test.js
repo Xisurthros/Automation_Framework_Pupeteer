@@ -16,15 +16,15 @@ describe('Home Page UI Component Tests', () => {
     beforeAll(async () => {
         testUtils = new TestUtils();
         await testUtils.init();
-        loginPage = new LoginPage(testUtils.puppeteerWrapper.page);
-        homePage = new HomePage(testUtils.puppeteerWrapper.page);
+        loginPage = new LoginPage(testUtils.page);
+        homePage = new HomePage(testUtils.page);
         await loginPage.navigateTo();
         await loginPage.login('standard_user', 'secret_sauce');
     }, 10000);
 
     // Tear down after all tests
     afterAll(async () => {
-        await testUtils.close();
+        await testUtils.closeBrowser();
     });
 
     // Test suite for verifying individual UI components
