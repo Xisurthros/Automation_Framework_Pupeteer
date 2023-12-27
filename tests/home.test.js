@@ -33,8 +33,6 @@ describe('Home Page UI Component Tests', () => {
             test(`verify "${name}" (${description}) exists`, async () => {
                 await homePage.verifyElementExists(name, selector);
                 await homePage.captureScreenshot(selector, `./screenshots/home/elements_exist/${name}.png`);
-                // Remove the outline so it is no carried over to the next test
-                await homePage.removeOutline(selector);
             });
         });
 
